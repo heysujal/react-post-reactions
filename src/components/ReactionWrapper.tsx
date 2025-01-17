@@ -1,13 +1,8 @@
 import React, {useState} from "react"
 import { ReactionsBar } from "./ReactionBar";
 
-// As a dev, 
-// mujhe bas emojis ke array pass krna pde 
-// aur mai apne wrapper mei apna component de du(DONE)
-// is button ke hover pe wo reactions dikhne chahiye!
-
 export interface Reaction{
-    src: string; //TODO: This should support url, svg and simple images and emojis
+    src: string; //TODO: This should support url, svg and simple images and emojis and lottie
     label: string; // TODO: use it for alt and showing on hover
     value: string; // TODO: use it for the onSelect
 }
@@ -21,17 +16,36 @@ interface ReactionWrapperProps {
     
 }
 
-const ReactionWrapper = ({children, className, reactions}):ReactionWrapperProps => {
 
-    const [showReactionsBar, setShowReactionBar] = useState(false);
+
+const ReactionWrapper: React.FC<ReactionWrapperProps> = ({children, className, reactions, onSelect}) => {
+    const [showReactionsBar, setShowReactionsBar] = useState(false);
+    // const [isTransitioning, setIsTransitioning] = useState(false);
+    const handleMouseOver = () => {
+        // if(isTransitioning) return;
+        setShowReactionsBar(true);
+    }
+    const handleMouseOut = () => {
+        // if(isTransitioning) return;
+        setShowReactionsBar(false);
+    }
     // This children can be any react component
+
+    //TODO: Somehow eliminate this usage of extra div and use children
+    // as a component directly
     return ( <div
-            onMouseOver = {() => setShowReactionBar(true)}
-            onMouseOut = {() => setShowReactionBar(false)}
-            className="inline-block relative reaction-wrapper-bar border border-black top-[100px] left-[100px]">
-            {showReactionsBar && <ReactionsBar className={className} reactions={reactions}/>}
+            onMouseOver = {handleMouseOver}
+            onMouseOut = {handleMouseOut}
+            >
+            {showReactionsBar && <ReactionsBar 
+            className={`transition ${className}`} 
+            reactions={reactions}
+            onSelect={onSelect}
+            setShowReactionsBar={setShowReactionsBar}
+            // setIsTransitioning={setIsTransitioning}  
+            />}
             {children}
         </div>)
 }
 
-export  {ReactionWrapper};
+export {ReactionWrapper};
